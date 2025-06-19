@@ -1,0 +1,39 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Самокаты",
+        "description": null
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Самокаты_2",
+        "description": null
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "Самокаты_3",
+        "description": null
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Storm",
+        "description": null,
+        "picture": "",
+        "category": 2,
+        "price": "5000.0000000000",
+        "created_at": "2025-06-19T19:22:56.555Z",
+        "updated_at": "2025-06-19T19:22:56.556Z"
+    }
+}
+]
