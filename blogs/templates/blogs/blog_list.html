@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% load picture_tags %}
+{% block title %}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container text-center py-5">
+        <h3 class="font-weight-bold">Просмотр списка блогов</h3>
+        <p class="lead my-4">Блоги</p>
+        <a href="{% url 'blogs:create_blogs' %}" class="card-link">Создать</a>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+{% for blog in object_list %}
+<div class="col-3 mb-2" >
+<div class="card" style="width: 18rem;">
+  <img src="{{ blog.picture|media_filter }}" class="card-img-top" alt="{{ blog.name }}">
+  <div class="card-body">
+    <h5 class="card-title">{{ blog.name }}</h5>
+    <p class="card-text">{{ blog.description|truncatechars:100 }}</p>
+  </div>
+   <div class="card-body">
+    <a href="{% url 'blogs:detail_blogs' blog.pk %}" class="card-link">Подробнее</a>
+    </div>
+</div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
