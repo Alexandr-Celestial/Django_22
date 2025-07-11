@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% block title %}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container text-center py-5">
+        <h3 class="font-weight-bold">Хотите ли вы удалить товар?</h3>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    <button type="submit" class="btn">Удалить</button>
+
+</form>
+</div>
+{% endblock %}
