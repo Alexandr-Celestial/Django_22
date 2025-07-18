@@ -136,4 +136,7 @@ MEDIA_ROOT = BASE_DIR / 'photos'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+WRONG_WORDS = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман',
+                                    'полиция', 'радар']
+
 
