@@ -25,8 +25,10 @@
                     </ul>
                 </div>
             </div>
+            {% if request.user.is_authenticated and product.owner == request.user %}
             <a href="/product_confirm_delete/{{product.pk}}" class="card-link">Удалить</a>
             <a href="/product_update/{{product.pk}}" class="card-link">Редактировать</a>
+            {% endif %}
             <footer class="pt-3 mt-4 text-body-secondary border-top">
                 © 2025
             </footer>

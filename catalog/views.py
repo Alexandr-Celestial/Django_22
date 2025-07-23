@@ -1,4 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -15,7 +18,7 @@ class ProductListView(ListView):
 class ProductContactsView(TemplateView):
     template_name = 'contacts.html'
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(DetailView):
     model = Product
     template_name = 'product_detail.html'
 
@@ -25,10 +28,30 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'product_create.html'
     success_url = reverse_lazy('catalog:home')
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'product_create.html'
+
+    # def post(self, request, *args, **kwargs):
+        # self.object = self.get_object()
+        #
+        # if self.request.user != self.object.owner and not self.request.user.has_perm('catalog.change_product'):
+        #     return HttpResponseForbidden("У вас нет прав редактировать этот продукт.")
+        # return super().post(request, *args, **kwargs)
+
+    def get_form_class(self):
+        user = self.request.user
+
+        if user == self.object.owner:
+            return ProductForm
+        if user.groups.filter(name='Moderators').exists():
+            return ProductForm
+        raise PermissionDenied
 
     def get_success_url(self):
         """ Перенаправление на страницу созданного блога. """
@@ -39,6 +62,13 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.request.user != self.object.owner and not self.request.user.has_perm('catalog.change_product'):
+            return HttpResponseForbidden("У вас нет прав редактировать этот продукт.")
+        return super().post(request, *args, **kwargs)
 
 
 
