@@ -148,6 +148,7 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", True) == "True"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
 
 AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_URL = 'catalog:home'
 LOGIN_REDIRECT_URL = 'catalog:home'
 LOGOUT_REDIRECT_URL = '/'
 

@@ -1,5 +1,8 @@
 from django.db import models
 
+from users.models import CustomUser
+
+
 # Create your models here.
 
 
@@ -23,6 +26,8 @@ class Product(models.Model):
     price = models.PositiveIntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status_of_publication = models.BooleanField(default=False)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True, related_name='products')
 
     def __str__(self):
         return self.name
@@ -30,6 +35,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
+        permissions = [('can_unpublish_product', 'Разрешение на публикацию'), ]
 
 
 
