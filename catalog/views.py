@@ -1,12 +1,17 @@
+from idlelib.autocomplete import ID_CHARS
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm
 from catalog.models import Product
+from catalog.services import get_products_from_category
 
 
 # Create your views here.
@@ -15,9 +20,29 @@ class ProductListView(ListView):
     model = Product
     template_name = 'home.html'
 
+    def get_queryset(self):
+        queryset = cache.get('products')
+        if not queryset:
+            queryset = super().get_queryset()
+            cache.set('products', queryset, 60 * 15)  # Кешируем данные на 15 минут
+        return queryset
+
+class CategoryProductsListView(ListView):
+    model = Product
+    template_name = 'product_list_category.html'
+
+    def get_queryset(self):
+        id_category = self.kwargs.get('pk')
+        queryset = cache.get('cat_products_' + id_category)
+        if not queryset:
+            queryset = get_products_from_category(id_category)
+            cache.set('cat_products_', + id_category, queryset, 60 * 15)  # Кешируем данные на 15 минут
+        return queryset
+
 class ProductContactsView(TemplateView):
     template_name = 'contacts.html'
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'product_detail.html'
